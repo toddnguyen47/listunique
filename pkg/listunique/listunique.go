@@ -19,19 +19,19 @@ func GetListOfUniqueItems[T comparable](inputList []T) []T {
 	return uniqueList1
 }
 
-type UniqueList[T comparable] struct {
+type uniqueList[T comparable] struct {
 	innerList []T
 	innerSet  mapset.Set[T]
 }
 
-func NewUniqueList[T comparable]() UniqueList[T] {
-	return UniqueList[T]{
+func NewUniqueList[T comparable]() Interface[T] {
+	return &uniqueList[T]{
 		innerList: make([]T, 0),
 		innerSet:  mapset.NewSet[T](),
 	}
 }
 
-func (u2 *UniqueList[T]) Add(elem T) {
+func (u2 *uniqueList[T]) Add(elem T) {
 	if u2.innerSet.Contains(elem) {
 		return
 	}
@@ -39,22 +39,22 @@ func (u2 *UniqueList[T]) Add(elem T) {
 	u2.innerList = append(u2.innerList, elem)
 }
 
-func (u2 *UniqueList[T]) AddAll(elems ...T) {
+func (u2 *uniqueList[T]) AddAll(elems ...T) {
 	for _, elem := range elems {
 		u2.Add(elem)
 	}
 }
 
-func (u2 *UniqueList[T]) GetList() []T {
+func (u2 *uniqueList[T]) GetList() []T {
 	return u2.innerList
 }
 
-func (u2 *UniqueList[T]) GetSize() int {
+func (u2 *uniqueList[T]) GetSize() int {
 	return len(u2.innerList)
 }
 
 // Update - will return false if the new element is already in the list or if index is out of bounds
-func (u2 *UniqueList[T]) Update(index int, elem T) bool {
+func (u2 *uniqueList[T]) Update(index int, elem T) bool {
 	if !isWithinBounds(index, u2.innerList) || u2.innerSet.Contains(elem) {
 		return false
 	}
@@ -72,7 +72,7 @@ func (u2 *UniqueList[T]) Update(index int, elem T) bool {
 
 // Delete - unfortunately, `Delete` will be a linear operation and very slow. Use sparingly!
 // Will return a bool to denote if element was found and removed or not
-func (u2 *UniqueList[T]) Delete(elem T) bool {
+func (u2 *uniqueList[T]) Delete(elem T) bool {
 	desiredIndex := -1
 	for i, listElem := range u2.innerList {
 		if listElem == elem {
